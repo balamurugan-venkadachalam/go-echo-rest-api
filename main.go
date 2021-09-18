@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"os"
@@ -37,6 +38,25 @@ func main() {
 
 		return context.JSON(http.StatusOK, product)
 	})
-	e.Logger.Print("Listening on port 8081")
-	e.Logger.Fatal(e.Start(":8081"))
+
+	e.GET("/products", func(context echo.Context) error {
+		return context.JSON(http.StatusOK, products)
+	})
+
+	e.POST("/product", func(context echo.Context) error {
+		type body struct {
+			Name string `json:"product_name"`
+		}
+		var requestBody body
+		if err := context.Bind(&requestBody); err != nil {
+			return err
+		}
+		product := map[int]string{
+			len(products) + 1: requestBody.Name,
+		}
+		products = append(products, product)
+		return context.JSON(http.StatusCreated, products)
+	})
+	e.Logger.Print(fmt.Sprintf("Listening on port %s", port))
+	e.Logger.Fatal(e.Start(fmt.Sprintf("localhost:%s", port)))
 }
