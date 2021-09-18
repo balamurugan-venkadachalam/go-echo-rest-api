@@ -9,5 +9,8 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(200, "homepage")
 	})
-	e.Start(":8081")
+	err := e.Start(":8081")
+	if err != nil {
+		return
+	}
 }
