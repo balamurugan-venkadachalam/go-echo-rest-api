@@ -110,6 +110,30 @@ func main() {
 		return context.JSON(http.StatusCreated, product)
 	})
 
+	e.DELETE("/product/:id", func(context echo.Context) error {
+		var product map[int]string
+		pID, err := strconv.Atoi(context.Param("id"))
+		if err != nil {
+			return err
+		}
+		var index int
+		for i, p := range products {
+			if _, f := p[pID]; f == true {
+				index = i
+				product = p
+			}
+		}
+		if product == nil {
+			return context.JSON(http.StatusNotFound, "product not found")
+		}
+		splice := func(p []map[int]string, i int) []map[int]string {
+			return append(p[:i], p[i+1:]...)
+		}
+		products = splice(products, index)
+
+		return context.JSON(http.StatusCreated, product)
+	})
+
 	e.Logger.Print(fmt.Sprintf("Listening on port %s", port))
 	e.Logger.Fatal(e.Start(fmt.Sprintf("localhost:%s", port)))
 }
