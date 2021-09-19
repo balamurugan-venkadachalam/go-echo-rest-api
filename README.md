@@ -18,4 +18,7 @@ gin --all -i main.go
 
 ```
 go get gopkg.in/go-playground/validator.v9
+
+go get github.com/ilyakaznacheev/cleanenv
+
 ```
