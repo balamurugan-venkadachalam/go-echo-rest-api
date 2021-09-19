@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -29,8 +30,9 @@ func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func Start() {
-
-	e.GET("/", homePage, ServerHeader)
+	e.Use(ServerHeader)
+	e.Pre(middleware.RemoveTrailingSlash(), middleware.BodyLimit("100K"))
+	e.GET("/", homePage)
 	e.GET("/products", getProducts)
 	e.POST("/product", postProduct)
 	e.PUT("/product/:id", putProduct)
